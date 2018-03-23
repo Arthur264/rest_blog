@@ -30,7 +30,7 @@ SECRET_KEY = '8%w43+!n8-p@y1)ol@-#1fe39rwd&s^+^f05_fzycw1$)6m3#2'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['rest-blog-artyr264.c9users.io']
 
 
 # Application definition
@@ -102,7 +102,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'blog',
         'USER': 'root',
-        'PASSWORD': '123',
+        'PASSWORD': '',
         'HOST': '127.0.0.1',
     }
 }
