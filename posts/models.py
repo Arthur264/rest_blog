@@ -16,7 +16,7 @@ class Post(models.Model):
     draft = models.BooleanField(default=False)
     read_time = models.IntegerField(default=0)
     publish = models.DateField(auto_now=True, auto_now_add=False)
-    create = models.DateField(auto_now=False, auto_now_add=False, default=timezone.now())
+    create = models.DateField(auto_now=False, auto_now_add=False)
     update = models.DateTimeField(auto_now=True, auto_now_add=False)
 
     def __str__(self):
