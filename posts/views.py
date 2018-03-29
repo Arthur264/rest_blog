@@ -1,3 +1,5 @@
+from django.db.utils import IntegrityError
+from helpers.response import ResponseHandler
 from .serializers import PostSerializer
 from .models import Post
 from .filter import PostFilter
@@ -5,8 +7,8 @@ from rest_framework import viewsets
 from rest_framework.filters import SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.response import Response
-from imgur.client import client
-from  .pagination import PostLimitOffsetPagination
+from .pagination import PostLimitOffsetPagination
+
 
 class PostViewSet(viewsets.ModelViewSet):
     serializer_class = PostSerializer
@@ -14,18 +16,23 @@ class PostViewSet(viewsets.ModelViewSet):
     filter_class = PostFilter
     search_fields = ('title',)
     pagination_class = PostLimitOffsetPagination
-    # lookup_field = 'slug'
-
+    lookup_field = 'slug'
 
     def get_queryset(self):
         return Post.objects.all()
 
     def create(self, request, *args, **kwargs):
-        fd = client.upload(request.FILES)
+        # fd = client.upload(request.FILES)
         data = request.POST.copy()
-        data['image'] = fd['data']['link']
-        serializer = PostSerializer(data=data)
+        serializer_context = {
+            'request': request,
+        }
+        # data['image'] = fd['data']['link']
+        serializer = PostSerializer(data=data, context=serializer_context)
         if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
+            try:
+                serializer.save()
+                return ResponseHandler(data=serializer.data)
+            except IntegrityError:
+                return ResponseHandler(error="slug empty")
         return Response(serializer.errors)

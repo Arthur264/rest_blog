@@ -19,15 +19,17 @@ from django.contrib import admin
 from rest_framework import routers
 from posts.views import PostViewSet
 from auth.views import UserViewSet
+from comment.views import CommentViewSet
 
 router = routers.DefaultRouter()
-router.register(r'posts', PostViewSet, base_name='posts')
 router.register(r'auth', UserViewSet, base_name='auth')
+router.register(r'posts', PostViewSet, base_name='posts')
+router.register(r'comment', CommentViewSet, base_name='comment')
 
 # Wire up our
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^api/v1/', include(router.urls)),
+    url(r'^api/v1/', include(router.urls, namespace='app')),
 ]
     
     

@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 
 import os
-import rest_framework
 from unipath import Path
 import sys  
 
@@ -30,13 +29,14 @@ SECRET_KEY = '8%w43+!n8-p@y1)ol@-#1fe39rwd&s^+^f05_fzycw1$)6m3#2'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['rest-blog-artyr264.c9users.io']
+ALLOWED_HOSTS = ['rest-blog-artyr264.c9users.io', '127.0.0.1']
 
 
 # Application definition
 
 INSTALLED_APPS = [
     'posts',
+    'comment',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -107,7 +107,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'blog',
         'USER': 'root',
-        'PASSWORD': '',
+        'PASSWORD': '123',
         'HOST': '127.0.0.1',
     }
 }

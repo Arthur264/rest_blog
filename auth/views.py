@@ -12,7 +12,8 @@ class UserViewSet(viewsets.ViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
-    # model = User
+    class Meta:
+        model = User
 
     def create(self, request):
         serializer = UserSerializer(data=request.POST)
