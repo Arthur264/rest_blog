@@ -35,3 +35,12 @@ class Post(BaseModel):
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title)  # set the slug explicitly
         return super(Post, self).save(*args, **kwargs)  # call Django's save()
+
+
+class PostVisited(BaseModel):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('user', 'post')
+        db_table = 'post_visited'

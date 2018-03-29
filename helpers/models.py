@@ -8,4 +8,5 @@ class BaseModel(models.Model):
     class Meta:
         abstract = True
 
-
+    def get_model_fields(model):
+        return model._meta.get_fields(include_hidden=True)

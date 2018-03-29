@@ -36,3 +36,9 @@ class PostViewSet(viewsets.ModelViewSet):
             except IntegrityError:
                 return ResponseHandler(error="slug empty")
         return Response(serializer.errors)
+
+    def retrieve(self, request, slug=None):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        serializer.add_visited()
+        return Response(serializer.data)
