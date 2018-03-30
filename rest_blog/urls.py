@@ -18,7 +18,7 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from rest_framework import routers
 from posts.views import PostViewSet
-from auth.views import UserViewSet
+from account.views import UserViewSet
 from comment.views import CommentViewSet
 
 router = routers.DefaultRouter()

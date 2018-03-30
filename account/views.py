@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from rest_framework import viewsets
-from django.contrib.auth.models import User
-from auth.serializers import UserSerializer
+from .models import User
+from account.serializers import UserSerializer
 from rest_framework.response import Response
 
 
@@ -21,3 +21,8 @@ class UserViewSet(viewsets.ViewSet):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors)
+
+    def list(self, request):
+        users = User.objects.values('id', 'username', 'first_name', 'last_name', 'email', 'date_joined')
+        # serializer = UserSerializer(users, many=True, required='id')
+        return Response(users)
