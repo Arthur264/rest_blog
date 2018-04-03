@@ -1,5 +1,4 @@
 from django.db.utils import IntegrityError
-from helpers.response import ResponseHandler
 from .serializers import PostSerializer
 from .models import Post
 from .filter import PostFilter
@@ -32,9 +31,9 @@ class PostViewSet(viewsets.ModelViewSet):
         if serializer.is_valid():
             try:
                 serializer.save()
-                return ResponseHandler(data=serializer.data)
+                return Response(serializer.data)
             except IntegrityError:
-                return ResponseHandler(error="slug empty")
+                return Response({"error": "slug empty"})
         return Response(serializer.errors)
 
     def retrieve(self, request, slug=None):

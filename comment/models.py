@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 from django.db import models
 from helpers.models import BaseModel
-from account.models import User
+from users.models import User
 from posts.models import Post
 
 

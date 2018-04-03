@@ -1,5 +1,5 @@
 from __future__ import unicode_literals
-from account.models import User
+from users.models import User
 from django.db import models
 from helpers.models import BaseModel
 from django.utils.text import slugify

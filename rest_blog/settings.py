@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'posts',
     'comment',
     'account',
+    'users',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -101,7 +102,7 @@ REST_FRAMEWORK = {
 
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
-AUTH_USER_MODEL = 'account.User'
+AUTH_USER_MODEL = 'users.User'
 
 DATABASES = {
     'default': {
