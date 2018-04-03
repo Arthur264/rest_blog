@@ -41,7 +41,3 @@ class UserViewSet(viewsets.ViewSet):
         serializer = UserSerializer(data=data)
         if serializer.is_valid():
             return Response(serializer.data)
-
-    @detail_route(methods=['post'], permission_classes=[IsAdminOrIsSelf], url_path='change-password')
-    def set_password(self, request):
-        pass
