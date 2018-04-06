@@ -6,6 +6,7 @@ from rest_framework.decorators import list_route
 from .permissions import IsAdminOrIsSelf
 from users.models import User
 from rest_framework import status
+from users.serializers import UserSerializer
 from rest_framework.authtoken.models import Token
 
 
@@ -14,12 +15,14 @@ from rest_framework.authtoken.models import Token
 class AuthViewSet(viewsets.ViewSet):
     queryset = User.objects.all()
 
-    def list(self, request):
-        pass
-
     @list_route(methods=['post'], permission_classes=[IsAdminOrIsSelf], url_path='change-password')
     def set_password(self, request):
-        return Response({"test": "sdhf  "})
+        serialized = UserSerializer(data=request.DATA)
+        if serialized.is_valid():
+            serialized.save()
+            return Response(status=status.HTTP_205_RESET_CONTENT)
+        else:
+            return Response(serialized.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @list_route(methods=['get'], permission_classes=[IsAdminOrIsSelf], url_path='login')
     def login(self, request):
@@ -34,6 +37,6 @@ class AuthViewSet(viewsets.ViewSet):
     @list_route(methods=['get'], permission_classes=[IsAdminOrIsSelf], url_path='token')
     def token(self, request):
         u = User.objects.get(username=request.user.username)
-        token = Token.objects.get_or_create(user=u)
+        token, created = Token.objects.get_or_create(user=u)
         request.user.token = token.key
         return Response({"token": token.key})

@@ -40,7 +40,7 @@ class ImgurClient(object):
             response = method_to_call(url, headers=header, params=data, data=data)
         else:
             response = method_to_call(url, headers=header, files=files, data=data)
-
+        print("res", response.json())
         return response.json()
 
     def upload(self, files, config=None):

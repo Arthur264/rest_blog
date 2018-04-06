@@ -1,20 +1,41 @@
 from .models import User
 from rest_framework import serializers
+from users.models import Friends
 
 
 class UserSerializer(serializers.ModelSerializer):
     date_joined = serializers.DateTimeField(format='%Y-%d-%m', read_only=True)
     email = serializers.EmailField()
-    password = serializers.CharField(style={'input_type': 'password'})
+    avatar = serializers.ImageField(max_length=None, use_url=True, required=False, default=None)
+
+    # password = serializers.CharField(style={'input_type': 'password'}, write_only=True)
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'first_name', 'last_name', 'email', 'date_joined', 'password')
-        read_only_fields = ('id', 'date_joined')
-        write_only_fields = ('password' 'first_name', 'last_name', 'email', 'username')
+        fields = ('id', 'username', 'first_name', 'last_name', 'email', 'avatar', 'city', 'date_joined')
+        read_only_fields = ('id', 'date_joined', 'city')
+        write_only_fields = ('first_name', 'last_name', 'email', 'username', 'avatar')
+        # extra_kwargs = {
+        #     'password': {'write_only': True}
+        # }
 
     def create(self, validated_data):
         user = super(UserSerializer, self).create(validated_data)
         user.set_password(validated_data['password'])
         user.save()
         return user
+
+
+class FriendSerializer(serializers.ModelSerializer):
+    user = serializers.HiddenField(default=None)
+
+    class Meta:
+        model = Friends
+        fields = ('id', 'user', 'friend')
+        # extra_kwargs = {
+        #     'user': {'read_only': True}
+        # }
+
+    def create(self, validated_data):
+        print(validated_data)
+        return validated_data

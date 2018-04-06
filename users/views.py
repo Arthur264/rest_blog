@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 from rest_framework import viewsets
 from .models import User
-from users.serializers import UserSerializer
+from users.serializers import UserSerializer, FriendSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import detail_route
 from account.permissions import IsAdminOrIsSelf
@@ -10,10 +10,10 @@ from account.permissions import IsAdminOrIsSelf
 
 # Create your views here.
 
-class UserViewSet(viewsets.ViewSet):
+class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    lookup_field = 'username'
+    lookup_field = 'pk'
 
     class Meta:
         model = User
@@ -28,16 +28,16 @@ class UserViewSet(viewsets.ViewSet):
             return Response(serializer.data)
         return Response(serializer.errors)
 
-    def list(self, request):
-        users = User.objects.values('id', 'username', 'first_name', 'last_name', 'email', 'date_joined', 'password')
-        serializer = UserSerializer(users, many=True)
-        return Response(serializer.data)
-
-    def update(self, request):
-        return Response(request)
-
-    def retrieve(self, request, username):
-        data = User.objects.get(username=username)
-        serializer = UserSerializer(data=data)
-        if serializer.is_valid():
-            return Response(serializer.data)
+    @detail_route(methods=['get', 'post'], permission_classes=[IsAdminOrIsSelf], url_path='friends',
+                  serializer_class=FriendSerializer)
+    def friends(self, request, pk=None):
+        if request.method == 'GET':
+            return Response({"test": request.user.id})
+        else:
+            print("id", request.user.id)
+            serializer = FriendSerializer(data={'user': request.user, 'friend': request.POST['friend']})
+            # print(serializer.user, serializer.friend)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors)
