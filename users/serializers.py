@@ -27,15 +27,13 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class FriendSerializer(serializers.ModelSerializer):
-    user = serializers.HiddenField(default=None)
+    # friend = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
 
     class Meta:
         model = Friends
         fields = ('id', 'user', 'friend')
-        # extra_kwargs = {
-        #     'user': {'read_only': True}
-        # }
+        lookup_field = 'pk'
 
-    def create(self, validated_data):
-        print(validated_data)
-        return validated_data
+
+
+

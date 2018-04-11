@@ -10,6 +10,7 @@ from storage.image_storage import ImageStorage
 from helpers.models import BaseModel
 
 
+
 # This code is triggered whenever a new user has been created and saved to the database
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):
@@ -37,6 +38,7 @@ class Friends(BaseModel):
 
     class Meta:
         db_table = 'friends'
+        unique_together = ('user', 'friend')
 
     @classmethod
     def make_friend(cls, user, friend):

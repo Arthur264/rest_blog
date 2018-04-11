@@ -24,10 +24,18 @@ class AuthViewSet(viewsets.ViewSet):
         else:
             return Response(serialized.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    @list_route(methods=['get'], permission_classes=[IsAdminOrIsSelf], url_path='login')
+    @list_route(methods=['get'], url_path='login')
     def login(self, request):
         print(request.auth)
         return Response({"test": request.user.auth_token})
+
+    @list_route(methods=['post'], url_path='register')
+    def register(self, request):
+        serializer = UserSerializer(data=request.POST)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @list_route(methods=['get'], permission_classes=[IsAdminOrIsSelf], url_path='logout')
     def logout(self, request):

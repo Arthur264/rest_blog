@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from rest_framework import viewsets
-from .models import User
+from .models import User, Friends
 from users.serializers import UserSerializer, FriendSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import detail_route
 from account.permissions import IsAdminOrIsSelf
+from django.db.models import Q
+from django.core import serializers
 
 
 # Create your views here.
@@ -32,11 +34,13 @@ class UserViewSet(viewsets.ModelViewSet):
                   serializer_class=FriendSerializer)
     def friends(self, request, pk=None):
         if request.method == 'GET':
-            return Response({"test": request.user.id})
+            user = request.user.pk
+            data = Friends.objects.filter(Q(user=user) | Q(friend=user)).filter(status=True)
+            return Response(serializers.serialize('json', data))
         else:
-            print("id", request.user.id)
-            serializer = FriendSerializer(data={'user': request.user, 'friend': request.POST['friend']})
-            # print(serializer.user, serializer.friend)
+            # print("id", request.user.id)
+            serializer = FriendSerializer(data={'user': request.user.pk, 'friend': request.POST['friend']})
+            print(serializer)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data)
