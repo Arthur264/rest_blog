@@ -2,13 +2,17 @@
 from __future__ import unicode_literals
 from rest_framework import viewsets
 from rest_framework.response import Response
+from helpers.response import ResponseHandler
 from rest_framework.decorators import list_route
 from .permissions import IsAdminOrIsSelf
 from users.models import User
 from rest_framework import status
-from users.serializers import UserSerializer
+from .serializers import LoginSerializer, RegisterSerializer
 from rest_framework.authtoken.models import Token
-
+from rest_framework.permissions import AllowAny
+from django.forms.models import model_to_dict
+from rest_framework.authtoken.serializers import AuthTokenSerializer
+from django.contrib.auth import authenticate
 
 # Create your views here.
 
@@ -24,17 +28,38 @@ class AuthViewSet(viewsets.ViewSet):
         else:
             return Response(serialized.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    @list_route(methods=['get'], url_path='login')
+    @list_route(methods=['post'], permission_classes=[AllowAny], url_path='login')
     def login(self, request):
-        print(request.auth)
-        return Response({"test": request.user.auth_token})
+        username = request.data.get("username")
+        password = request.data.get("password")
 
-    @list_route(methods=['post'], url_path='register')
+        user = authenticate(username=username, password=password)
+        if not user:
+            return Response({"error": "Login failed"}, status=status.HTTP_401_UNAUTHORIZED)
+
+        token, _ = Token.objects.get_or_create(user=user)
+        data = {
+            'user': {
+                'id': user.id,
+                'email': user.email,
+                'username': user.username,
+                'first_name': user.first_name,
+                'last_name': user.last_name
+                },
+            'token': token.key
+        }
+        return ResponseHandler(data=data)
+
+    @list_route(methods=['post'],permission_classes=[AllowAny], url_path='register')
     def register(self, request):
-        serializer = UserSerializer(data=request.POST)
+        serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            user = serializer.save()
+            return Response({
+                'user_id': user.id, 
+                'email': user.email,  
+                'token': model_to_dict(user.auth_token)['key']}, status=status.HTTP_201_CREATED)
+                
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @list_route(methods=['get'], permission_classes=[IsAdminOrIsSelf], url_path='logout')

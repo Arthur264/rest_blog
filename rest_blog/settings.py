@@ -29,7 +29,7 @@ SECRET_KEY = '8%w43+!n8-p@y1)ol@-#1fe39rwd&s^+^f05_fzycw1$)6m3#2'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['rest-blog-artyr264.c9users.io', '127.0.0.1']
+ALLOWED_HOSTS = ['elephant-artyr264.c9users.io', '127.0.0.1']
 
 # Application definition
 
@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'comment',
     'account',
     'users',
+    'dataset',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -45,14 +46,20 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_filters',
+    'corsheaders',
+    'sslserver',
+    'djangosecure',
+    'storages',
     'rest_framework',
     'rest_framework.authtoken'
 
 ]
 
 MIDDLEWARE_CLASSES = [
+    'djangosecure.middleware.SecurityMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -60,6 +67,16 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+CORS_ORIGIN_ALLOW_ALL=True
+CORS_ALLOW_HEADERS = ('content-disposition', 'accept-encoding',
+                      'content-type', 'accept', 'origin', 'authorization','cache-control', 'x-requested-with')
+CORS_ORIGIN_WHITELIST = (
+    'http://elephant-artyr264.c9users.io',
+)
+
+SECURE_SSL_REDIRECT = False
+
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 ROOT_URLCONF = 'rest_blog.urls'
 
@@ -110,9 +127,9 @@ AUTH_USER_MODEL = 'users.User'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'blog',
+        'NAME': 'elephant',
         'USER': 'root',
-        'PASSWORD': '123',
+        'PASSWORD': '',
         'HOST': '127.0.0.1',
     }
 }

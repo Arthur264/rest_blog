@@ -7,7 +7,6 @@ from rest_framework.filters import SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.response import Response
 from .pagination import PostLimitOffsetPagination
-from imgur.client import client
 
 
 class PostViewSet(viewsets.ModelViewSet):
@@ -23,9 +22,6 @@ class PostViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         data = request.data
-        # fd = client.upload(request.FILES)
-        # return Response(fd)
-        # print (data)
         serializer_context = {
             'request': request,
         }

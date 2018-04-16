@@ -10,7 +10,8 @@ class CommentViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return Comment.objects.all()
-
+    
+    
     def create(self, request, *args, **kwargs):
         data = request.POST.copy()
         serializer_context = {
