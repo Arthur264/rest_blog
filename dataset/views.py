@@ -14,16 +14,19 @@ class DatasetViewSet(viewsets.ViewSet):
 
 
     def list(self, request):
-        queryset = Dataset.objects.all()
+        queryset = Dataset.objects.filter(user=request.user.id)
         serializer = DataSetSerializer(queryset, many=True)
         return Response(serializer.data)
         
         
     def create(self, request):
-        serializer = DataSetSerializer(data=request.data)
-        print(request.user)
+        serializer_context = {
+            'request': request,
+        }
+        serializer = DataSetSerializer(data=request.data, context=serializer_context, many=False)
         if serializer.is_valid():
-            serializer.save()
+            name = request.FILES['file'].name.split('.')[0]
+            serializer.save(user=request.user, name=name, type=request.FILES['file'].content_type)
             return ResponseHandler(data=serializer.data)
         return ResponseHandler(data=serializer.errors)
 

@@ -19,7 +19,14 @@ class DropBox:
         meta = dbx.files_upload(file.read(), self._full_path(name))
         link = dbx.sharing_create_shared_link(self._full_path(name)).url
         link = link[:-1] + '1'
-        return link
+        file_metadata = {
+            "name": ''.join(meta.name.split(".")[:-1]),
+            "type": meta.name.split(".")[-1],
+            "size": meta.size,
+            "link": link
+        }
+        # print(file_metadata)
+        return file_metadata
             
             
 client = DropBox()
