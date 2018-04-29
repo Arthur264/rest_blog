@@ -3,11 +3,11 @@ from .serializers import DataSetSerializer
 from .models import Dataset
 from rest_framework.response import Response
 from rest_framework import viewsets, permissions
-
+from django.shortcuts import get_object_or_404
+from analysis import parse
 class DatasetViewSet(viewsets.ViewSet):
     permission_classes = (permissions.AllowAny,)
     serializer_class = DataSetSerializer
-    
     
     def get_queryset(self):
         return Dataset.objects.all()
@@ -18,6 +18,15 @@ class DatasetViewSet(viewsets.ViewSet):
         serializer = DataSetSerializer(queryset, many=True)
         return Response(serializer.data)
         
+    def retrieve(self, request, pk=None):
+        queryset = Dataset.objects.all()
+        data = get_object_or_404(queryset, pk=pk)
+        serializer = DataSetSerializer(data)
+        return Response({
+            "id": serializer.data['id'],
+            "name": serializer.data['name'], 
+            "file": serializer.data['file'],
+            "data": parse.csv_to_json(serializer.data['file'])})
         
     def create(self, request):
         serializer_context = {

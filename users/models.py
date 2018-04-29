@@ -19,7 +19,7 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
 
 
 class User(AbstractUser):
-    avatar = models.ImageField(null=True, blank=True, default=None, storage=ImageStorage())
+    avatar = models.ImageField(null=True, blank=True, default=None, storage=ImageStorage(), max_length=500)
     is_blocked = models.BooleanField(default=False)
     description = models.CharField(max_length=200, null=True, blank=True)
     device = models.CharField(null=True, blank=True, max_length=50)

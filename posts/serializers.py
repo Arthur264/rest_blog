@@ -5,7 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 
 
 class PostSerializer(serializers.HyperlinkedModelSerializer):
-    user = UserSerializer(read_only=True)
+    user = serializers.PrimaryKeyRelatedField(read_only=True,default=serializers.CurrentUserDefault())
     category = serializers.SlugRelatedField(slug_field='name', queryset=Category.objects.all())
     image = serializers.ImageField(max_length=None, use_url=True)
     url = serializers.HyperlinkedIdentityField(view_name='app:posts-detail', lookup_field='slug')
@@ -16,12 +16,14 @@ class PostSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Post
         fields = ('id', 'title', 'body', 'slug', 'image', 'user', 'draft', 'publish', 'category', 'url', 'visited')
-        read_only_fields = ('id', 'slug', 'user', 'publish', 'url', 'visited')
-        write_only_fields = ('title', 'body', 'image', 'draft')
+        read_only_fields = ('id', 'slug', 'publish', 'url', 'visited')
+        write_only_fields = ('title', 'body', 'image', 'draft', 'user')
         lookup_field = 'slug'
 
     def create(self, validated_data):
+        print("validation_data", validated_data)
         post = Post.objects.create(**validated_data)
+        print("post", post)
         return post
 
     # def get_comment(self, obj):
@@ -46,5 +48,10 @@ class PostSerializer(serializers.HyperlinkedModelSerializer):
         except Exception as e:
             return False
 
-            # def get_user(self, obj):
-            #     return dict(id=obj.user.id, username=obj.user.username, email=obj.user.username)
+
+class CategorySerializer(serializers.HyperlinkedModelSerializer):
+    permission_classes = [IsAuthenticated]
+    
+    class Meta:
+        model = Category
+        fields = ('id', 'name')

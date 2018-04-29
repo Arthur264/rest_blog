@@ -4,6 +4,7 @@ from django.db import models
 from helpers.models import BaseModel
 from django.utils.text import slugify
 from storage.image_storage import ImageStorage
+# from image.models import Image
 
 
 class Category(BaseModel):
@@ -17,8 +18,8 @@ class Category(BaseModel):
 
 
 class Post(BaseModel):
-    user = models.ForeignKey(User, default=1)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, default=1)
+    user = models.ForeignKey(User)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
     title = models.CharField(max_length=120)
     slug = models.SlugField(unique=True)
     body = models.TextField(null=True, blank=True)
@@ -34,8 +35,8 @@ class Post(BaseModel):
         return self.title
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.title)  # set the slug explicitly
-        return super(Post, self).save(*args, **kwargs)  # call Django's save()
+        self.slug = slugify(self.title)
+        return super(Post, self).save(*args, **kwargs)
 
 
 class PostVisited(BaseModel):

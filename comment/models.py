@@ -10,7 +10,7 @@ from posts.models import Post
 # Create your models here.
 
 class Comment(BaseModel):
-    user = models.ForeignKey(User, default=1)
+    user = models.ForeignKey(User)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     body = models.TextField()
     parent = models.ForeignKey('self', null=True, blank=True)

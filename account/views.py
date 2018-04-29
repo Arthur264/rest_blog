@@ -6,6 +6,7 @@ from helpers.response import ResponseHandler
 from rest_framework.decorators import list_route
 from .permissions import IsAdminOrIsSelf
 from users.models import User
+from users.serializers import UserSerializer
 from rest_framework import status
 from .serializers import LoginSerializer, RegisterSerializer
 from rest_framework.authtoken.models import Token
@@ -13,7 +14,7 @@ from rest_framework.permissions import AllowAny
 from django.forms.models import model_to_dict
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from django.contrib.auth import authenticate
-
+import json
 # Create your views here.
 
 class AuthViewSet(viewsets.ViewSet):
@@ -38,14 +39,9 @@ class AuthViewSet(viewsets.ViewSet):
             return Response({"error": "Login failed"}, status=status.HTTP_401_UNAUTHORIZED)
 
         token, _ = Token.objects.get_or_create(user=user)
+        user_data = UserSerializer(user)
         data = {
-            'user': {
-                'id': user.id,
-                'email': user.email,
-                'username': user.username,
-                'first_name': user.first_name,
-                'last_name': user.last_name
-                },
+            'user': user_data.data,
             'token': token.key
         }
         return ResponseHandler(data=data)
