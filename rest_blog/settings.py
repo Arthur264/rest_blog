@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'account',
     'users',
     'dataset',
-    'image',
+    'file',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

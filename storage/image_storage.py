@@ -8,7 +8,6 @@ from django.utils.datastructures import MultiValueDict
 class ImageStorage(Storage):
     def _save(self, name, content):
         data = client.upload(MultiValueDict({"image": [content]}))
-
         return data['data']['link']
 
     def get_available_name(self, name, max_length):

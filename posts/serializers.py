@@ -1,13 +1,16 @@
 from .models import Post, Category, PostVisited
 from rest_framework import serializers
 from users.serializers import UserSerializer
+from file.serializers import FileSerializer
+from file.models import File
+from django.forms.models import model_to_dict
 from rest_framework.permissions import IsAuthenticated
 
 
 class PostSerializer(serializers.HyperlinkedModelSerializer):
     user = serializers.PrimaryKeyRelatedField(read_only=True,default=serializers.CurrentUserDefault())
     category = serializers.SlugRelatedField(slug_field='name', queryset=Category.objects.all())
-    image = serializers.ImageField(max_length=None, use_url=True)
+    image = serializers.ListField(child=FileSerializer())
     url = serializers.HyperlinkedIdentityField(view_name='app:posts-detail', lookup_field='slug')
     permission_classes = [IsAuthenticated]
     # comment = CommentSerializer(many=True)
@@ -20,10 +23,13 @@ class PostSerializer(serializers.HyperlinkedModelSerializer):
         write_only_fields = ('title', 'body', 'image', 'draft', 'user')
         lookup_field = 'slug'
 
+    
     def create(self, validated_data):
-        print("validation_data", validated_data)
+        image = validated_data.pop('image')
         post = Post.objects.create(**validated_data)
-        print("post", post)
+        for img in image:
+            photo = File.objects.create(name=img.name,filename=img, mime=img.content_type)
+            post.image.add(photo)
         return post
 
     # def get_comment(self, obj):

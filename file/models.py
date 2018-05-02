@@ -5,12 +5,13 @@ from django.db import models
 from storage.image_storage import ImageStorage
 # Create your models here.
 
-class Image(BaseModel):
+class File(BaseModel):
     name = models.CharField(max_length=200)
-    image = models.ImageField(storage=ImageStorage())
+    filename = models.ImageField(storage=ImageStorage())
+    mime = models.CharField(max_length=50)
     
     class Meta:
-        db_table = 'image'
+        db_table = 'file'
 
     def __str__(self):
         return self.name

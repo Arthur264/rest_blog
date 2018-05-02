@@ -4,7 +4,7 @@ from django.db import models
 from helpers.models import BaseModel
 from django.utils.text import slugify
 from storage.image_storage import ImageStorage
-# from image.models import Image
+from file.models import File
 
 
 class Category(BaseModel):
@@ -23,7 +23,7 @@ class Post(BaseModel):
     title = models.CharField(max_length=120)
     slug = models.SlugField(unique=True)
     body = models.TextField(null=True, blank=True)
-    image = models.ImageField(null=True, blank=True, storage=ImageStorage())
+    image = models.ManyToManyField(File, related_name='image', null=True, blank=True)
     draft = models.BooleanField(default=False)
     read_time = models.IntegerField(default=0)
     publish = models.DateField(auto_now=True, auto_now_add=False)
@@ -46,3 +46,4 @@ class PostVisited(BaseModel):
     class Meta:
         unique_together = ('user', 'post')
         db_table = 'post_visited'
+
