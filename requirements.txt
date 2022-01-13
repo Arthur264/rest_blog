@@ -1,7 +1,7 @@
 BzrTools==2.6.0
 Django==1.11.11
 Markdown==2.6.11
-Pillow==5.1.0
+Pillow==9.0.0
 SecretStorage==2.0.0
 Unipath==1.1
 argparse==1.2.1
